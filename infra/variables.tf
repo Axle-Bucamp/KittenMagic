@@ -1,6 +1,6 @@
 # variables.tf
 
-variable "aws_region" {
+variable "region" {
   description = "The AWS region to deploy resources"
   type        = string
   default     = "us-west-2"
@@ -18,20 +18,16 @@ variable "subnet_cidrs" {
   default     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
 }
 
-variable "ecs_task_cpu" {
-  description = "CPU units for the ECS task"
-  type        = number
-  default     = 256
+variable "environment" {
+  description = "Environment name (e.g., dev, staging, prod)"
+  type        = string
+  default     = "dev"
 }
 
-variable "ecs_task_memory" {
-  description = "Memory for the ECS task"
-  type        = number
-  default     = 512
+variable "app_name" {
+  description = "Name of the application"
+  type        = string
+  default     = "web-app"
 }
 
-variable "app_count" {
-  description = "Number of Docker containers to run"
-  type        = number
-  default     = 3
-}
+# Add more variables as needed for your specific use case
