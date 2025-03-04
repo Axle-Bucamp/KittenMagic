@@ -1,118 +1,86 @@
-# Secure Web Application Deployment Project
+# Infrastructure as Code Project
 
 ## Overview
-
-This project provides a comprehensive solution for deploying a secure web application using Terraform, Ansible, and HashiCorp Vault. It sets up a robust infrastructure on AWS, including VPC configuration, ECS cluster deployment, and application load balancing, while ensuring secure management of sensitive data.
+This project demonstrates a comprehensive Infrastructure as Code (IaC) setup using Terraform, Ansible, and HashiCorp Vault. It automates the deployment of a web application on AWS, including infrastructure provisioning, application deployment, and secrets management.
 
 ## Components
-
-1. **Terraform**: Manages AWS infrastructure
-   - VPC with public and private subnets
-   - ECS Cluster
-   - Application Load Balancer
-   - Security Groups
-
-2. **Ansible**: Handles application deployment and configuration
-   - Web server setup
-   - Nginx configuration
-   - SSL/TLS setup with Let's Encrypt
-
-3. **HashiCorp Vault**: Manages secrets and sensitive data
-   - AWS credentials
-   - Database credentials
-   - Other application secrets
-
-4. **Docker**: Containerizes the web application
+- **Terraform**: Manages AWS infrastructure (VPC, ECS, ALB)
+- **Ansible**: Handles application deployment and configuration
+- **HashiCorp Vault**: Manages secrets and credentials
+- **Docker**: Containerizes the web application
 
 ## Prerequisites
-
 - AWS Account
 - Terraform (>= 0.14.0)
 - Ansible
-- Docker
 - HashiCorp Vault
-- AWS CLI
+- Docker
+- Git
 
 ## Project Structure
-
 ```
 project/
+│
 ├── ansible/
-│   ├── playbooks/
-│   │   └── deploy_web_app.yml
-│   └── roles/
-│       ├── common/
-│       └── web_app/
-│           └── templates/
-│               └── nginx.conf.j2
+│   ├── roles/
+│   │   ├── common/
+│   │   └── web_app/
+│   └── site.yml
+│
 ├── infra/
 │   ├── main.tf
 │   ├── variables.tf
 │   ├── outputs.tf
 │   └── providers.tf
+│
 ├── vault/
 │   ├── config.hcl
 │   └── setup.sh
-└── README.md
+│
+├── README.md
+└── CONTRIBUTING.md
 ```
 
 ## Deployment Instructions
-
-1. **Set up Vault**:
+1. Clone the repository
+2. Set up Vault:
    ```
    cd vault
    ./setup.sh
    ```
-
-2. **Configure AWS credentials**:
+3. Configure Terraform:
    ```
-   aws configure
-   ```
-
-3. **Initialize Terraform**:
-   ```
-   cd infra
+   cd ../infra
    terraform init
    terraform plan
    terraform apply
    ```
-
-4. **Run Ansible playbook**:
+4. Run Ansible playbook:
    ```
    cd ../ansible
-   ansible-playbook playbooks/deploy_web_app.yml
+   ansible-playbook -i inventory site.yml
    ```
 
 ## Important Notes
-
-- Ensure all sensitive data is stored in Vault and not in code repositories.
-- The provided Vault configuration is for development. Use a production-ready setup for live environments.
-- Always use the latest stable versions of Terraform, Ansible, and Vault.
-- Regularly update and patch all components of the infrastructure.
+- Ensure all sensitive data is stored in Vault and not in version control
+- Review and adjust AWS permissions as needed
+- The current setup is for development; additional security measures are needed for production
 
 ## Security Considerations
-
-- Enable and properly configure SSL/TLS for all communications.
-- Use strong authentication methods for Vault and AWS.
-- Regularly rotate secrets and access keys.
-- Implement proper network segmentation and security groups in AWS.
+- Enable TLS for Vault in production
+- Use least privilege principle for AWS IAM roles
+- Regularly rotate credentials and review access logs
 
 ## Customization
-
-- Modify `variables.tf` to adjust AWS region, VPC CIDR, and other infrastructure settings.
-- Update `nginx.conf.j2` in Ansible roles to customize web server configuration.
-- Adjust Vault's `config.hcl` for different secret engines or authentication methods.
+- Modify `variables.tf` to adjust AWS region, VPC CIDR, etc.
+- Update `site.yml` to change application deployment settings
 
 ## Troubleshooting
-
-- Check Terraform and Ansible logs for detailed error messages.
-- Ensure Vault is properly initialized and unsealed before running deployments.
-- Verify AWS credentials and permissions are correctly set up.
+- If Vault fails to start, check the config.hcl file and ensure proper permissions
+- For AWS-related issues, verify your credentials and VPC settings
 
 ## Contributing
-
-Please read CONTRIBUTING.md for details on our code of conduct and the process for submitting pull requests.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
 ## License
-
-This project is licensed under the MIT License - see the LICENSE.md file for details.
+[Add your chosen license here]
