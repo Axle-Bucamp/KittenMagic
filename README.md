@@ -1,64 +1,118 @@
-# Infrastructure and Configuration Management Project
+# Secure Web Application Deployment Project
 
-This project sets up a complete infrastructure using Terraform, Ansible, and HashiCorp Vault.
+## Overview
 
-## Directory Structure
+This project provides a comprehensive solution for deploying a secure web application using Terraform, Ansible, and HashiCorp Vault. It sets up a robust infrastructure on AWS, including VPC configuration, ECS cluster deployment, and application load balancing, while ensuring secure management of sensitive data.
+
+## Components
+
+1. **Terraform**: Manages AWS infrastructure
+   - VPC with public and private subnets
+   - ECS Cluster
+   - Application Load Balancer
+   - Security Groups
+
+2. **Ansible**: Handles application deployment and configuration
+   - Web server setup
+   - Nginx configuration
+   - SSL/TLS setup with Let's Encrypt
+
+3. **HashiCorp Vault**: Manages secrets and sensitive data
+   - AWS credentials
+   - Database credentials
+   - Other application secrets
+
+4. **Docker**: Containerizes the web application
+
+## Prerequisites
+
+- AWS Account
+- Terraform (>= 0.14.0)
+- Ansible
+- Docker
+- HashiCorp Vault
+- AWS CLI
+
+## Project Structure
 
 ```
-/
+project/
+├── ansible/
+│   ├── playbooks/
+│   │   └── deploy_web_app.yml
+│   └── roles/
+│       ├── common/
+│       └── web_app/
+│           └── templates/
+│               └── nginx.conf.j2
 ├── infra/
 │   ├── main.tf
 │   ├── variables.tf
 │   ├── outputs.tf
 │   └── providers.tf
-├── ansible/
-│   ├── site.yml
-│   └── roles/
-│       ├── common/
-│       │   └── tasks/
-│       │       └── main.yml
-│       └── web_app/
-│           └── tasks/
-│               └── main.yml
 ├── vault/
 │   ├── config.hcl
 │   └── setup.sh
 └── README.md
 ```
 
-## Components
+## Deployment Instructions
 
-1. **Terraform (infra/)**
-   - Sets up AWS infrastructure including VPC, ECS, Load Balancer, and monitoring.
+1. **Set up Vault**:
+   ```
+   cd vault
+   ./setup.sh
+   ```
 
-2. **Ansible (ansible/)**
-   - Configures servers with common settings and deploys the web application.
+2. **Configure AWS credentials**:
+   ```
+   aws configure
+   ```
 
-3. **Vault (vault/)**
-   - Manages secrets and provides secure access to sensitive information.
+3. **Initialize Terraform**:
+   ```
+   cd infra
+   terraform init
+   terraform plan
+   terraform apply
+   ```
 
-## Setup Instructions
+4. **Run Ansible playbook**:
+   ```
+   cd ../ansible
+   ansible-playbook playbooks/deploy_web_app.yml
+   ```
 
-1. **Terraform**
-   - Navigate to the `infra/` directory.
-   - Run `terraform init` to initialize Terraform.
-   - Run `terraform apply` to create the infrastructure.
+## Important Notes
 
-2. **Ansible**
-   - Update the inventory file with your server details.
-   - Run `ansible-playbook -i inventory site.yml` to configure servers and deploy the application.
+- Ensure all sensitive data is stored in Vault and not in code repositories.
+- The provided Vault configuration is for development. Use a production-ready setup for live environments.
+- Always use the latest stable versions of Terraform, Ansible, and Vault.
+- Regularly update and patch all components of the infrastructure.
 
-3. **Vault**
-   - Navigate to the `vault/` directory.
-   - Run `./setup.sh` to install and initialize Vault.
-   - Follow the prompts to unseal Vault and set up initial access.
+## Security Considerations
 
-## Security Note
+- Enable and properly configure SSL/TLS for all communications.
+- Use strong authentication methods for Vault and AWS.
+- Regularly rotate secrets and access keys.
+- Implement proper network segmentation and security groups in AWS.
 
-Ensure that sensitive information such as AWS credentials, Vault tokens, and unseal keys are stored securely and not committed to version control.
+## Customization
 
-## Maintenance
+- Modify `variables.tf` to adjust AWS region, VPC CIDR, and other infrastructure settings.
+- Update `nginx.conf.j2` in Ansible roles to customize web server configuration.
+- Adjust Vault's `config.hcl` for different secret engines or authentication methods.
 
-Regular updates and security patches should be applied to all components. Monitor logs and performance metrics to ensure optimal operation of the infrastructure.
+## Troubleshooting
 
-For more detailed information on each component, refer to the README files in their respective directories.
+- Check Terraform and Ansible logs for detailed error messages.
+- Ensure Vault is properly initialized and unsealed before running deployments.
+- Verify AWS credentials and permissions are correctly set up.
+
+## Contributing
+
+Please read CONTRIBUTING.md for details on our code of conduct and the process for submitting pull requests.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE.md file for details.
