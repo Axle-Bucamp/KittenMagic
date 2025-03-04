@@ -1,3 +1,38 @@
 ---
-# Tasks for common role
-# Add your common tasks here
+# Common role tasks
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Install common packages
+  package:
+    name:
+      - curl
+      - vim
+      - htop
+      - git
+    state: present
+
+- name: Set timezone
+  timezone:
+    name: UTC
+
+- name: Configure firewall
+  ufw:
+    state: enabled
+    rule: allow
+    port: "22"
+
+- name: Ensure NTP is installed and running
+  package:
+    name: ntp
+    state: present
+  notify: Restart NTP service
+
+handlers:
+  - name: Restart NTP service
+    service:
+      name: ntp
+      state: restarted
